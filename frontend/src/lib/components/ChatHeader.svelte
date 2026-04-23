@@ -1,12 +1,14 @@
 <script>
-  import { Send, Trash, Info, X, Sun, Moon, History } from 'lucide-svelte'
+  import { Send, Trash, Info, X, Sun, Moon, History, CircleQuestionMark } from 'lucide-svelte'
 
   let {
     isDark,
     showCharacterCard,
     showProjectCard,
     showHistoryPanel,
+    showSuggestedQuestions,
     onToggleTheme,
+    onToggleSuggestedQuestions,
     onToggleCharacter,
     onToggleProject,
     onToggleHistory,
@@ -48,6 +50,16 @@
           <Moon size={18} class="theme-icon moon-icon" />
         {/if}
       </div>
+    </button>
+
+    <!-- Suggested Questions Toggle -->
+    <button
+      class="btn btn-ghost btn-sm btn-square transition-colors
+        {showSuggestedQuestions ? 'text-nord-8 bg-nord-8/10' : 'text-nord-3 hover:text-nord-0'}"
+      onclick={onToggleSuggestedQuestions}
+      title={showSuggestedQuestions ? 'Hide suggested questions' : 'Show suggested questions'}
+    >
+      <CircleQuestionMark size={18} />
     </button>
     
     <!-- Info -->

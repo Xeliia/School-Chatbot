@@ -32,10 +32,15 @@
     isDark = !isDark
   }
 
+  function toggleSuggestedQuestions() {
+    showSuggestedQuestions = !showSuggestedQuestions
+  }
+
   /* -- Card panel states -- */
   let showCharacterCard = $state(false)
   let showProjectCard = $state(false)
   let showHistoryPanel = $state(false)
+  let showSuggestedQuestions = $state(true)
   let showLightbox = $state(false)
   
   /* -- Closing animation states -- */
@@ -508,7 +513,9 @@
       {showCharacterCard}
       {showProjectCard}
       {showHistoryPanel}
+      {showSuggestedQuestions}
       onToggleTheme={toggleTheme}
+      onToggleSuggestedQuestions={toggleSuggestedQuestions}
       onToggleCharacter={toggleCharacter}
       onToggleProject={toggleProject}
       onToggleHistory={toggleHistory}
@@ -547,6 +554,7 @@
     <!-- Suggested FAQ Buttons -->
     <SuggestedQuestions
       {suggestions}
+      visible={showSuggestedQuestions}
       {loading}
       onSelect={handleSuggestionSelect}
     />
