@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi import FastAPI, HTTPException, Depends, Header, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -7,6 +7,7 @@ import json
 from typing import AsyncGenerator
 
 from config import get_settings, Settings, LLMBackendType
+from faq_suggestions import select_suggestions
 
 app = FastAPI(title="Simple Chatbot API")
 
@@ -190,6 +191,18 @@ async def list_models(
             return response.json()
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/suggestions")
+async def list_suggestions(
+    _: bool = Depends(verify_api_key),
+    exclude_ids: str = Query(default="", description="Comma-separated suggestion IDs to exclude for this turn"),
+    limit: int = Query(default=4, ge=1, le=10),
+):
+    parsed_exclusions = [part.strip() for part in exclude_ids.split(",") if part.strip()]
+    safe_limit = max(3, min(4, limit))
+    suggestions = select_suggestions(exclude_ids=parsed_exclusions, limit=safe_limit)
+    return {"suggestions": suggestions}
 
 
 @app.get("/config")
