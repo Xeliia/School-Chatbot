@@ -4,7 +4,11 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from fastapi.testclient import TestClient
+
+from config import get_settings
 from faq_suggestions import FAQ_POOL, select_suggestions
+import main as backend_main
 
 
 class SuggestionSelectorTests(unittest.TestCase):
@@ -39,6 +43,44 @@ class SuggestionSelectorTests(unittest.TestCase):
     def test_pool_size_matches_expectation(self):
         self.assertGreaterEqual(len(FAQ_POOL), 15)
         self.assertLessEqual(len(FAQ_POOL), 20)
+
+
+class SuggestionEndpointTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.client = TestClient(backend_main.app)
+        cls.api_key = get_settings().api_key
+
+    def test_requires_authorization(self):
+        response = self.client.get("/suggestions")
+        self.assertEqual(response.status_code, 401)
+
+    def test_returns_schema_with_auth(self):
+        response = self.client.get(
+            "/suggestions",
+            headers={"Authorization": f"Bearer {self.api_key}"},
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("suggestions", data)
+        suggestions = data["suggestions"]
+        self.assertGreaterEqual(len(suggestions), 3)
+        self.assertLessEqual(len(suggestions), 4)
+        for item in suggestions:
+            self.assertIn("id", item)
+            self.assertIn("question", item)
+            self.assertIn("category", item)
+
+    def test_exclusion_ids_are_not_returned(self):
+        excluded = "general-location,academic-strands"
+        response = self.client.get(
+            f"/suggestions?exclude_ids={excluded}&limit=4",
+            headers={"Authorization": f"Bearer {self.api_key}"},
+        )
+        self.assertEqual(response.status_code, 200)
+        ids = {item["id"] for item in response.json()["suggestions"]}
+        self.assertNotIn("general-location", ids)
+        self.assertNotIn("academic-strands", ids)
 
 
 if __name__ == "__main__":
