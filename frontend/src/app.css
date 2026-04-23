@@ -1,0 +1,871 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: false;
+}
+
+@theme {
+  --font-sans: "Source Code Pro", monospace;
+
+  /* Nord palette tokens */
+  --color-nord-0: #2E3440;
+  --color-nord-1: #3B4252;
+  --color-nord-2: #434C5E;
+  --color-nord-3: #4C566A;
+  --color-nord-4: #D8DEE9;
+  --color-nord-5: #E5E9F0;
+  --color-nord-6: #ECEFF4;
+  --color-nord-7: #8FBCBB;
+  --color-nord-8: #88C0D0;
+  --color-nord-9: #81A1C1;
+  --color-nord-10: #5E81AC;
+  --color-nord-11: #BF616A;
+  --color-nord-12: #D08770;
+  --color-nord-13: #EBCB8B;
+  --color-nord-14: #A3BE8C;
+  --color-nord-15: #B48EAD;
+}
+
+[data-theme="nord"] {
+  --color-primary: #88C0D0;
+  --color-primary-content: #2E3440;
+  --color-secondary: #81A1C1;
+  --color-secondary-content: #ECEFF4;
+  --color-accent: #B48EAD;
+  --color-accent-content: #2E3440;
+  --color-neutral: #2E3440;
+  --color-neutral-content: #ECEFF4;
+  --color-base-100: #ECEFF4;
+  --color-base-200: #E5E9F0;
+  --color-base-300: #D8DEE9;
+  --color-base-content: #2E3440;
+  --color-info: #88C0D0;
+  --color-success: #A3BE8C;
+  --color-warning: #EBCB8B;
+  --color-error: #BF616A;
+  --radius-btn: 1.5rem;
+  --radius-box: 1.5rem;
+}
+
+/* Nord Dark Theme (Polar Night) - similar to nordtheme.com */
+[data-theme="nord-dark"] {
+  --color-primary: #88C0D0;
+  --color-primary-content: #ECEFF4;
+  --color-secondary: #81A1C1;
+  --color-secondary-content: #ECEFF4;
+  --color-accent: #B48EAD;
+  --color-accent-content: #ECEFF4;
+  --color-neutral: #3B4252;
+  --color-neutral-content: #ECEFF4;
+  --color-base-100: #2E3440;
+  --color-base-200: #3B4252;
+  --color-base-300: #434C5E;
+  --color-base-content: #ECEFF4;
+  --color-info: #88C0D0;
+  --color-success: #A3BE8C;
+  --color-warning: #EBCB8B;
+  --color-error: #BF616A;
+  --radius-btn: 1.5rem;
+  --radius-box: 1.5rem;
+}
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #dde4ea 0%, #c8d5de 50%, #d8dee9 100%);
+  transition: background 0.4s ease;
+  min-width: 320px;
+  overflow-x: auto;
+}
+
+/* Theme transition wrapper */
+.theme-wrapper {
+  transition: background 0.4s ease;
+}
+
+.theme-wrapper[data-theme="nord"] {
+  background: linear-gradient(135deg, #dde4ea 0%, #c8d5de 50%, #d8dee9 100%);
+}
+
+/* Dark mode background */
+.theme-wrapper[data-theme="nord-dark"] {
+  background: linear-gradient(135deg, #2E3440 0%, #3B4252 50%, #2E3440 100%);
+}
+
+/* ── Universal transition for theme changes ── */
+.chat-card,
+.character-card,
+.project-card,
+.history-card,
+.chat-card *,
+.character-card *,
+.project-card *,
+.history-card * {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ── Dark mode card styles ── */
+[data-theme="nord-dark"] .chat-card,
+[data-theme="nord-dark"] .character-card,
+[data-theme="nord-dark"] .project-card,
+[data-theme="nord-dark"] .history-card {
+  background: #3B4252;
+}
+
+[data-theme="nord-dark"] .chat-card {
+  border: 1px solid #4C566A;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 20px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="nord-dark"] .character-card,
+[data-theme="nord-dark"] .project-card,
+[data-theme="nord-dark"] .history-card {
+  border: 1px solid #4C566A;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 20px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 40px -10px rgba(136, 192, 208, 0.12),
+    0 0 80px -20px rgba(180, 142, 173, 0.08);
+}
+
+/* ── Dark mode text colors ── */
+[data-theme="nord-dark"] .text-nord-0 { color: #ECEFF4 !important; }
+[data-theme="nord-dark"] .text-nord-3 { color: #D8DEE9 !important; }
+[data-theme="nord-dark"] .text-nord-3\/70 { color: rgba(216, 222, 233, 0.7) !important; }
+[data-theme="nord-dark"] .text-nord-3\/50 { color: rgba(216, 222, 233, 0.6) !important; }
+[data-theme="nord-dark"] .text-nord-3\/40 { color: rgba(216, 222, 233, 0.5) !important; }
+[data-theme="nord-dark"] .text-white { color: #ECEFF4 !important; }
+
+/* ── Dark mode backgrounds ── */
+[data-theme="nord-dark"] .bg-white { background-color: #2E3440 !important; }
+[data-theme="nord-dark"] .bg-nord-6 { background-color: #434C5E !important; }
+[data-theme="nord-dark"] .bg-nord-5 { background-color: #4C566A !important; }
+
+/* ── Dark mode borders ── */
+[data-theme="nord-dark"] .border-nord-5 { border-color: #4C566A !important; }
+[data-theme="nord-dark"] .border-white { border-color: #434C5E !important; }
+
+/* Stats card dark mode */
+[data-theme="nord-dark"] .stats-card {
+  background-color: #3B4252 !important;
+  border-color: #4C566A !important;
+}
+
+/* Stats card dividers in dark mode - target the stat items directly */
+[data-theme="nord-dark"] .stats-grid > .stat-item {
+  border-color: #4C566A !important;
+}
+
+[data-theme="nord-dark"] .stats-grid > .stat-item + .stat-item {
+  border-left-color: #4C566A !important;
+}
+
+/* ── Dark mode header icons ── */
+[data-theme="nord-dark"] .btn-ghost {
+  color: #D8DEE9;
+}
+
+[data-theme="nord-dark"] .btn-ghost:hover {
+  background-color: rgba(136, 192, 208, 0.15);
+  color: #88C0D0;
+}
+
+/* ── Dark mode avatar borders for depth ── */
+[data-theme="nord-dark"] .header-avatar {
+  box-shadow: 0 0 0 2px #4C566A, 0 0 0 4px rgba(136, 192, 208, 0.25);
+}
+
+[data-theme="nord-dark"] .status-indicator {
+  border-color: #3B4252 !important;
+  box-shadow: 0 0 6px rgba(163, 190, 140, 0.5);
+}
+
+/* Message avatars in dark mode */
+[data-theme="nord-dark"] .msg-enter img.rounded-full {
+  box-shadow: 0 0 0 1px #4C566A;
+}
+
+/* ── Dark mode input area ── */
+[data-theme="nord-dark"] .bg-nord-6.rounded-full {
+  background-color: #3B4252 !important;
+  box-shadow: inset 0 0 0 1px #4C566A;
+}
+
+[data-theme="nord-dark"] textarea::placeholder {
+  color: rgba(216, 222, 233, 0.6) !important;
+}
+
+[data-theme="nord-dark"] textarea {
+  color: #ECEFF4 !important;
+}
+
+/* ── Dark mode send button ── */
+[data-theme="nord-dark"] .bg-nord-4\/60 {
+  background-color: rgba(67, 76, 94, 0.6) !important;
+}
+
+[data-theme="nord-dark"] .text-nord-3\/40 {
+  color: rgba(216, 222, 233, 0.4) !important;
+}
+
+/* ── Dark mode link buttons ── */
+[data-theme="nord-dark"] .hover\:bg-nord-5:hover {
+  background-color: #4C566A !important;
+}
+
+/* ── Dark mode scrollbar ── */
+[data-theme="nord-dark"] ::-webkit-scrollbar-thumb {
+  background: #4C566A;
+}
+
+[data-theme="nord-dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #88C0D0;
+}
+
+
+
+[data-theme="nord-dark"] .bg-nord-6\/50 {
+  background-color: rgba(67, 76, 94, 0.5) !important;
+}
+
+/* ── Dark mode close buttons ── */
+[data-theme="nord-dark"] .bg-white\/80 {
+  background-color: rgba(59, 66, 82, 0.9) !important;
+}
+
+[data-theme="nord-dark"] .hover\:bg-white:hover {
+  background-color: #434C5E !important;
+}
+
+/* Theme toggle animation */
+.theme-toggle {
+  color: #4C566A;
+}
+
+[data-theme="nord-dark"] .theme-toggle {
+  color: #D8DEE9;
+}
+
+.theme-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-icon {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+
+.sun-icon {
+  animation: sunEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.moon-icon {
+  animation: moonEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes sunEnter {
+  from {
+    transform: rotate(-90deg) scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes moonEnter {
+  from {
+    transform: rotate(90deg) scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ── Chat card ── */
+/* (merged into the .chat-card rule above with transition) */
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D8DEE9; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #81A1C1; }
+
+/* ── Message bubble styles ── */
+
+/* User (Sensei) bubble */
+.msg-bubble-user {
+  color: #2E3440;
+  background-color: #88C0D0;
+}
+
+/* Assistant (Noa) bubble — light mode */
+.msg-bubble-noa {
+  background-color: #2E3440;
+  color: #ECEFF4;
+}
+
+/* Assistant (Noa) bubble — dark mode: lighter bg to pop against dark chat area */
+[data-theme="nord-dark"] .msg-bubble-noa {
+  background-color: #434C5E;
+  color: #ECEFF4;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(76, 86, 106, 0.5);
+}
+
+/* User (Sensei) bubble — dark mode: subtle glow for definition */
+[data-theme="nord-dark"] .msg-bubble-user {
+  background-color: #88C0D0;
+  color: #2E3440;
+  box-shadow: 0 1px 4px rgba(136, 192, 208, 0.3);
+}
+
+/* ── Waveform bars ── */
+.waveform-bar {
+  display: inline-block;
+  width: 2.5px;
+  border-radius: 2px;
+  background: #4C566A;
+}
+
+/* ── Animations ── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+  40%           { transform: translateY(-5px); opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg-enter {
+  animation: fadeSlideUp 0.3s ease-out forwards;
+}
+
+.dot-bounce {
+  animation: dotBounce 1.4s ease-in-out infinite;
+}
+
+/* ── Info card panel wrapper (push animation) ── */
+.card-panel-wrapper {
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 24px;
+}
+
+/* ── Profile flip animation ── */
+.profile-image-wrapper {
+  perspective: 1000px;
+  border: none;
+  background: linear-gradient(135deg, rgba(136, 192, 208, 0.3), rgba(129, 161, 193, 0.3));
+  box-shadow: 0 8px 32px rgba(136, 192, 208, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+.profile-image-wrapper:hover {
+  box-shadow: 0 12px 40px rgba(136, 192, 208, 0.4);
+}
+
+.flipper {
+  position: relative;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.profile-image-wrapper.flipped .flipper {
+  transform: rotateY(180deg);
+}
+
+.profile-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  backface-visibility: hidden;
+}
+
+.profile-back {
+  transform: rotateY(180deg);
+}
+
+/* ── Main chat card transition ── */
+.chat-card {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid transparent;
+  box-shadow:
+    0 4px 6px -1px rgba(46, 52, 64, 0.05),
+    0 20px 50px -12px rgba(46, 52, 64, 0.12),
+    0 0 0 1px rgba(216, 222, 233, 0.5);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  overflow: hidden;
+  min-width: 320px;
+}
+
+/* ── Character/Project/History card styles ── */
+.character-card,
+.project-card,
+.history-card {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid rgba(216, 222, 233, 0.6);
+  box-shadow:
+    0 4px 6px -1px rgba(46, 52, 64, 0.05),
+    0 20px 50px -12px rgba(46, 52, 64, 0.12);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ── History item styles ── */
+.history-item {
+  background: transparent;
+}
+
+.history-item:hover {
+  background-color: rgba(216, 222, 233, 0.5);
+}
+
+.history-item-active {
+  background-color: rgba(136, 192, 208, 0.12);
+}
+
+.history-item-active:hover {
+  background-color: rgba(136, 192, 208, 0.2);
+}
+
+[data-theme="nord-dark"] .history-item:hover {
+  background-color: rgba(76, 86, 106, 0.5);
+}
+
+[data-theme="nord-dark"] .history-item-active {
+  background-color: rgba(136, 192, 208, 0.1);
+}
+
+[data-theme="nord-dark"] .history-item-active:hover {
+  background-color: rgba(136, 192, 208, 0.18);
+}
+
+/* ── History icon colors ── */
+/* Light mode: subtle neutral */
+.history-icon { color: rgba(76, 86, 106, 0.6); }
+
+/* Dark mode: cycle through Aurora colors */
+[data-theme="nord-dark"] .history-icon-0 { color: #BF616A; } /* Red */
+[data-theme="nord-dark"] .history-icon-1 { color: #D08770; } /* Orange */
+[data-theme="nord-dark"] .history-icon-2 { color: #EBCB8B; } /* Yellow */
+[data-theme="nord-dark"] .history-icon-3 { color: #A3BE8C; } /* Green */
+[data-theme="nord-dark"] .history-icon-4 { color: #B48EAD; } /* Purple */
+
+/* ── 3D Cover photo card ── */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* Smooth 3D tilt card (cursor-following) */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+  will-change: transform;
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  box-shadow: 0 4px 15px rgba(46, 52, 64, 0.15);
+}
+
+.tilt-card:hover {
+  box-shadow: 
+    0 20px 40px -12px rgba(46, 52, 64, 0.35),
+    0 0 0 1px rgba(46, 52, 64, 0.05);
+}
+
+/* Dark mode tilt card */
+[data-theme="nord-dark"] .tilt-card {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(136, 192, 208, 0.2);
+}
+
+[data-theme="nord-dark"] .tilt-card:hover {
+  box-shadow: 
+    0 20px 40px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 2px rgba(136, 192, 208, 0.4);
+}
+
+/* Lightbox 3D card (cursor-following) */
+.cover-3d-card {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+  will-change: transform;
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.cover-3d-card:hover {
+  box-shadow: 
+    0 35px 60px -15px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* ── Lightbox ── */
+@keyframes lightboxFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes lightboxFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes lightboxScaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes lightboxScaleOut {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.9); }
+}
+
+.lightbox-overlay {
+  animation: lightboxFadeIn 0.25s ease-out forwards;
+}
+
+.lightbox-overlay-closing {
+  animation: lightboxFadeOut 0.25s ease-out forwards;
+}
+
+.lightbox-card {
+  animation: lightboxScaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.lightbox-card-closing {
+  animation: lightboxScaleOut 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+/* ── Aurora Pills (Nord Aurora palette) ── */
+.aurora-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  cursor: default;
+  border: 2px solid transparent;
+  white-space: nowrap;
+}
+
+/* Aurora Red (nord-11: #BF616A) */
+.aurora-red {
+  background: rgba(191, 97, 106, 0.12);
+  color: #BF616A;
+  border-color: rgba(191, 97, 106, 0.25);
+  box-shadow: 0 2px 8px rgba(191, 97, 106, 0.15);
+}
+
+.aurora-red:hover {
+  background: rgba(191, 97, 106, 0.2);
+  box-shadow: 0 4px 12px rgba(191, 97, 106, 0.3);
+}
+
+/* Aurora Orange (nord-12: #D08770) */
+.aurora-orange {
+  background: rgba(208, 135, 112, 0.12);
+  color: #D08770;
+  border-color: rgba(208, 135, 112, 0.25);
+  box-shadow: 0 2px 8px rgba(208, 135, 112, 0.15);
+}
+
+.aurora-orange:hover {
+  background: rgba(208, 135, 112, 0.2);
+  box-shadow: 0 4px 12px rgba(208, 135, 112, 0.3);
+}
+
+/* Aurora Yellow (nord-13: #EBCB8B) */
+.aurora-yellow {
+  background: rgba(235, 203, 139, 0.12);
+  color: #c9a227;
+  border-color: rgba(235, 203, 139, 0.25);
+  box-shadow: 0 2px 8px rgba(235, 203, 139, 0.15);
+}
+
+.aurora-yellow:hover {
+  background: rgba(235, 203, 139, 0.2);
+  box-shadow: 0 4px 12px rgba(235, 203, 139, 0.3);
+}
+
+/* Aurora Green (nord-14: #A3BE8C) */
+.aurora-green {
+  background: rgba(163, 190, 140, 0.12);
+  color: #A3BE8C;
+  border-color: rgba(163, 190, 140, 0.25);
+  box-shadow: 0 2px 8px rgba(163, 190, 140, 0.15);
+}
+
+.aurora-green:hover {
+  background: rgba(163, 190, 140, 0.2);
+  box-shadow: 0 4px 12px rgba(163, 190, 140, 0.3);
+}
+
+/* Aurora Purple (nord-15: #B48EAD) */
+.aurora-purple {
+  background: rgba(180, 142, 173, 0.12);
+  color: #B48EAD;
+  border-color: rgba(180, 142, 173, 0.25);
+  box-shadow: 0 2px 8px rgba(180, 142, 173, 0.15);
+}
+
+.aurora-purple:hover {
+  background: rgba(180, 142, 173, 0.2);
+  box-shadow: 0 4px 12px rgba(180, 142, 173, 0.3);
+}
+
+/* Dark mode aurora pills - brighter and more vibrant */
+[data-theme="nord-dark"] .aurora-red {
+  background: rgba(191, 97, 106, 0.25);
+  border-color: rgba(191, 97, 106, 0.5);
+  box-shadow: 0 2px 12px rgba(191, 97, 106, 0.3);
+}
+
+[data-theme="nord-dark"] .aurora-orange {
+  background: rgba(208, 135, 112, 0.25);
+  border-color: rgba(208, 135, 112, 0.5);
+  box-shadow: 0 2px 12px rgba(208, 135, 112, 0.3);
+}
+
+[data-theme="nord-dark"] .aurora-yellow {
+  background: rgba(235, 203, 139, 0.25);
+  color: #EBCB8B;
+  border-color: rgba(235, 203, 139, 0.5);
+  box-shadow: 0 2px 12px rgba(235, 203, 139, 0.3);
+}
+
+[data-theme="nord-dark"] .aurora-green {
+  background: rgba(163, 190, 140, 0.25);
+  border-color: rgba(163, 190, 140, 0.5);
+  box-shadow: 0 2px 12px rgba(163, 190, 140, 0.3);
+}
+
+[data-theme="nord-dark"] .aurora-purple {
+  background: rgba(180, 142, 173, 0.25);
+  border-color: rgba(180, 142, 173, 0.5);
+  box-shadow: 0 2px 12px rgba(180, 142, 173, 0.3);
+}
+
+/* ── Dark mode aurora accents for UI elements ── */
+[data-theme="nord-dark"] .profile-image-wrapper {
+  background: linear-gradient(135deg, rgba(136, 192, 208, 0.3), rgba(180, 142, 173, 0.3));
+  box-shadow: 0 8px 32px rgba(136, 192, 208, 0.3), 0 0 0 2px rgba(136, 192, 208, 0.2);
+}
+
+[data-theme="nord-dark"] .tilt-card {
+  box-shadow: 0 0 0 2px rgba(136, 192, 208, 0.3);
+}
+
+/* Aurora glow on status indicator in dark mode */
+[data-theme="nord-dark"] .bg-nord-14 {
+  box-shadow: 0 0 8px rgba(163, 190, 140, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MOBILE/TABLET RESPONSIVE STYLES
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Base mobile overlay styles (used by both mobile and tablet) */
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 35;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Mobile: Chat card full screen */
+@media (max-width: 767px) {
+  .theme-wrapper {
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+
+  .chat-card {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Side cards become fixed overlays on mobile */
+  .card-panel-wrapper {
+    position: fixed !important;
+    top: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 40 !important;
+    border-radius: 0 !important;
+  }
+
+  /* Left card (Character) */
+  .card-panel-wrapper:has(.character-card) {
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .card-panel-wrapper:has(.character-card) .character-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  /* Right card (Project) */
+  .card-panel-wrapper:has(.project-card) {
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .card-panel-wrapper:has(.project-card) .project-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  /* History card */
+  .card-panel-wrapper:has(.history-card) {
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .card-panel-wrapper:has(.history-card) .history-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  /* Adjust header padding */
+  .chat-card .flex.items-center.gap-3.px-6 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Adjust message area padding */
+  .chat-card .overflow-y-auto.px-5 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Adjust input area padding */
+  .chat-card .px-5.py-4 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Lightbox adjustments for mobile */
+  .lightbox-overlay {
+    padding: 1rem !important;
+  }
+
+  .cover-3d-card {
+    max-width: 95vw !important;
+    max-height: 70vh !important;
+  }
+
+  .lightbox-overlay .absolute.top-6.right-6 {
+    top: 1rem !important;
+    right: 1rem !important;
+  }
+}
+
+/* Tablet: Side cards become overlays too (to prevent squishing) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .card-panel-wrapper {
+    position: fixed !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    height: auto !important;
+    max-height: 85vh !important;
+    z-index: 40 !important;
+    border-radius: 24px !important;
+  }
+
+  .card-panel-wrapper:has(.character-card) {
+    left: 2rem !important;
+    width: 22rem !important;
+  }
+
+  .card-panel-wrapper:has(.project-card) {
+    right: 2rem !important;
+    left: auto !important;
+    width: 20rem !important;
+  }
+
+  .card-panel-wrapper:has(.history-card) {
+    right: 2rem !important;
+    left: auto !important;
+    width: 22rem !important;
+  }
+
+  .character-card {
+    width: 22rem !important;
+    height: auto !important;
+    max-height: 85vh !important;
+  }
+
+  .project-card {
+    width: 20rem !important;
+    height: auto !important;
+    max-height: 85vh !important;
+  }
+
+  .history-card {
+    width: 22rem !important;
+    height: auto !important;
+    max-height: 85vh !important;
+  }
+
+  /* Show backdrop on tablet too */
+  .mobile-overlay {
+    display: block !important;
+  }
+}
+
+/* Large screens: original push behavior */
+@media (min-width: 1024px) {
+  .card-panel-wrapper {
+    position: relative !important;
+    transform: none !important;
+    top: auto !important;
+  }
+
+  .mobile-overlay {
+    display: none !important;
+  }
+}
+
