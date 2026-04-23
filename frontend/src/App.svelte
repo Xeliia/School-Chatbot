@@ -1,5 +1,5 @@
 <script>
-  import { tick } from 'svelte'
+  import { tick, onMount } from 'svelte'
 
   // -- Components --
   import ChatHeader from './lib/components/ChatHeader.svelte'
@@ -11,10 +11,19 @@
   import ProjectCard from './lib/components/ProjectCard.svelte'
   import HistoryPanel from './lib/components/HistoryPanel.svelte'
   import Lightbox from './lib/components/Lightbox.svelte'
+  import SuggestedQuestions from './lib/components/SuggestedQuestions.svelte'
+
+  import {
+    buildExcludeParam,
+    clampSuggestionLimit,
+    createSuggestionState,
+    onSuggestionClicked,
+    onSuggestionsRefreshed,
+  } from './lib/suggestions.js'
 
   // -- API Configuration --
-  const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
-  const API_KEY = import.meta.env.VITE_API_KEY ?? 'changeme'
+  const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '')
+  const API_KEY = (import.meta.env.VITE_API_KEY || 'changeme').trim()
 
   /* -- Theme state -- */
   let isDark = $state(false)
@@ -84,6 +93,36 @@
   let loading = $state(false)
   let bottomEl = $state(null)
   let abortController = $state(null)
+
+  let suggestions = $state([])
+  let suggestionState = $state(createSuggestionState())
+
+  async function refreshSuggestions() {
+    try {
+      const exclude = buildExcludeParam(suggestionState)
+      const limit = clampSuggestionLimit(4)
+      const query = new URLSearchParams({ limit: String(limit) })
+      if (exclude) query.set('exclude_ids', exclude)
+
+      const res = await fetch(`${API_URL}/suggestions?${query.toString()}`, {
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`
+        }
+      })
+
+      if (!res.ok) return
+
+      const payload = await res.json()
+      suggestions = Array.isArray(payload?.suggestions) ? payload.suggestions : []
+      suggestionState = onSuggestionsRefreshed(suggestionState)
+    } catch {
+      suggestions = []
+    }
+  }
+
+  onMount(async () => {
+    await refreshSuggestions()
+  })
 
   /* -- Chat History (localStorage) -- */
   const HISTORY_KEY = 'noa-chat-history'
@@ -232,6 +271,8 @@
     messages = getRandomPreset()
     input = ''
     loading = false
+    suggestionState = createSuggestionState()
+    refreshSuggestions()
   }
 
   function stopGenerating() {
@@ -241,8 +282,16 @@
     }
   }
 
-  async function sendMessage() {
-    const content = input.trim()
+  async function handleSuggestionSelect(suggestion) {
+    if (!suggestion || !suggestion.id || !suggestion.question || loading) return
+
+    suggestionState = onSuggestionClicked(suggestionState, suggestion.id)
+    suggestions = suggestions.filter((item) => item.id !== suggestion.id)
+    await sendMessage(suggestion.question)
+  }
+
+  async function sendMessage(prefilledContent = null) {
+    const content = (prefilledContent ?? input).trim()
     if (!content || loading) return
 
     input = ''
@@ -275,7 +324,19 @@
       })
 
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`)
+        let detail = ''
+        try {
+          const contentType = res.headers.get('content-type') || ''
+          if (contentType.includes('application/json')) {
+            const payload = await res.json()
+            detail = payload?.detail || payload?.error || ''
+          } else {
+            detail = (await res.text()).trim()
+          }
+        } catch {
+          // Keep generic fallback below.
+        }
+        throw new Error(detail || `HTTP ${res.status}`)
       }
 
       const reader = res.body.getReader()
@@ -376,10 +437,11 @@
           type: 'text'
         }]
       } else {
+        const errorMessage = (err && err.message) ? err.message : 'Something went wrong. Please try again.'
         messages = [...messages, {
           id: baseId + paragraphCount,
           role: 'assistant',
-          content: 'Something went wrong. Please try again.',
+          content: errorMessage,
           time: new Date(),
           type: 'text'
         }]
@@ -388,6 +450,7 @@
       loading = false
       abortController = null
       await scrollToBottom()
+      await refreshSuggestions()
       saveCurrentChat()
     }
   }
@@ -480,6 +543,13 @@
 
       <div bind:this={bottomEl}></div>
     </div>
+
+    <!-- Suggested FAQ Buttons -->
+    <SuggestedQuestions
+      {suggestions}
+      {loading}
+      onSelect={handleSuggestionSelect}
+    />
 
     <!-- Input Area -->
     <ChatInput 
